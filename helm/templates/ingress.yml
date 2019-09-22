@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dummyWeb
+  namespace: cmp
+spec:
+  rules:
+  - host: dummyWeb.3stripes...
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: dummyWeb
+          servicePort: 80

@@ -1,4 +1,4 @@
-#!groovy
+.#!groovy
 /**
         * Jenkins Pipeline for deploy a dummy web application
         * Author: David Lorite
@@ -12,8 +12,8 @@ properties([
     ])
 ])
 
-//Run it in any Linux node with kubectl
-node("linux&&kubcetl"){
+//Run it in any Linux node with kubectl and docker
+node("linux&&kubcetl&&docker"){
     //First we download de 
     stage('Download repository') {
         checkout([$class: 'GitSCM', branches: [[name: "*/${gitJenkinsBranch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: "${gitCredentialsID}", url: "${gitRepository}"]]])
@@ -21,6 +21,12 @@ node("linux&&kubcetl"){
     //Run all test for the application
     stage('Run test'){
         echo "run some tests"
+    }
+    stage('Create docker image'){
+        sh "docker build -t registry.tools.adidas-group.com/cmp/dummyWeb:test ."
+    }
+    stage{
+        sh "docker push registry.tools.adidas-group.com/cmp/dummyWeb:test"
     }
     //Run the deployment with helm for dev-hzo as an example
     stage('Deploy it in dev'){
