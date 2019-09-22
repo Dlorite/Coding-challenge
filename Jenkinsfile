@@ -5,14 +5,25 @@
  */
 def gitJenkinsBranch = 'master'
 def gitRepository =  'https://github.com/Dlorite/Coding-challenge.git'
+def gitCredentialsID = "dlorite"
 
 properties([
     parameters([
     ])
 ])
 
-node{
+//Run it in any Linux node with kubectl
+node("linux&&kubcetl"){
+    //First we download de 
     stage('Download repository') {
         checkout([$class: 'GitSCM', branches: [[name: "*/${gitJenkinsBranch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: "${gitCredentialsID}", url: "${gitRepository}"]]])
+    }
+    //Run all test for the application
+    stage('Run test'){
+        echo "run some tests"
+    }
+    //Run the deployment with helm for dev-hzo as an example
+    stage('Deploy it in dev'){
+        sh "helm --kube-context=dev-hzo upgrade dummyWeb helm"
     }
 }
