@@ -3,20 +3,13 @@
         * Jenkins Pipeline for deploy a dummy web application
         * Author: David Lorite
  */
-def gitJenkinsBranch = 'master'
 def gitRepository =  'https://github.com/Dlorite/Coding-challenge.git'
-def gitCredentialsID = "dlorite"
-
-properties([
-    parameters([
-    ])
-])
 
 //Run it in any Linux node with kubectl and docker
 node("linux&&kubcetl&&docker"){
     //First we download de 
     stage('Download repository') {
-        checkout([$class: 'GitSCM', branches: [[name: "*/${gitJenkinsBranch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: "${gitCredentialsID}", url: "${gitRepository}"]]])
+        checkout scm         
     }
     //Run all test for the application
     stage('Run test'){
